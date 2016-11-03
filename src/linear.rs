@@ -12,14 +12,14 @@ pub fn interpolate2d_linear_u8sr<R>(in_dim: (usize, usize, usize), in_buf: &[u8]
       let v = kv as f32 + 0.5;
       let x = u * sx as f32;
       let y = v * sy as f32;
-      let x0 = x - 0.5;
-      let x1 = x + 0.5;
-      let y0 = y - 0.5;
-      let y1 = y + 0.5;
-      let kx0 = x0.floor().max(0.0) as usize;
-      let kx1 = x1.floor().min((in_w-1) as f32) as usize;
-      let ky0 = y0.floor().max(0.0) as usize;
-      let ky1 = y1.floor().min((in_h-1) as f32) as usize;
+      let x0 = (x - 0.5).floor().max(0.0) + 0.5;
+      let x1 = (x + 0.5).floor().max((in_w-1) as f32) + 0.5;
+      let y0 = (y - 0.5).floor().max(0.0) + 0.5;
+      let y1 = (y + 0.5).floor().min((in_h-1) as f32) + 0.5;
+      let kx0 = x0.floor() as usize;
+      let kx1 = x1.floor() as usize;
+      let ky0 = y0.floor() as usize;
+      let ky1 = y1.floor() as usize;
       for c in 0 .. out_chan {
         let y0_value = if kx0 != kx1 {
           ((x1 - x) * in_buf[c + in_chan * (kx0 + in_w * ky0)] as f32
