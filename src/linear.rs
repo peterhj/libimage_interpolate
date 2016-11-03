@@ -21,15 +21,15 @@ pub fn interpolate2d_linear_u8sr<R>(in_dim: (usize, usize, usize), in_buf: &[u8]
       let ky0 = y0.floor().max(0.0) as usize;
       let ky1 = y1.floor().min((in_h-1) as f32) as usize;
       for c in 0 .. out_chan {
-        let y0_value = if x0 != x1 {
+        let y0_value = if kx0 != kx1 {
           ((x1 - x) * in_buf[c + in_chan * (kx0 + in_w * ky0)] as f32
               + (x - x0) * in_buf[c + in_chan * (kx1 + in_w * ky0)] as f32)
               / (x1 - x0)
         } else {
           in_buf[c + in_chan * (kx0 + in_w * ky0)] as f32
         };
-        let fvalue = if y0 != y1 {
-          let y1_value = if x0 != x1 {
+        let fvalue = if ky0 != ky1 {
+          let y1_value = if kx0 != kx1 {
             ((x1 - x) * in_buf[c + in_chan * (kx0 + in_w * ky1)] as f32
                 + (x - x0) * in_buf[c + in_chan * (kx1 + in_w * ky1)] as f32)
                 / (x1 - x0)
@@ -42,9 +42,13 @@ pub fn interpolate2d_linear_u8sr<R>(in_dim: (usize, usize, usize), in_buf: &[u8]
         };
         let fvalue_lo = fvalue.floor();
         let fvalue_hi = fvalue.ceil();
-        let z: f32 = rng.gen();
-        let value = if z < fvalue - fvalue_lo {
-          fvalue_hi
+        let value = if fvalue_lo != fvalue_hi {
+          let z: f32 = rng.gen();
+          if z < fvalue - fvalue_lo {
+            fvalue_hi
+          } else {
+            fvalue_lo
+          }
         } else {
           fvalue_lo
         }.max(0.0).min(255.0) as u8;
