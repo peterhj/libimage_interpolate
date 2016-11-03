@@ -13,7 +13,7 @@ pub fn interpolate2d_linear_u8sr<R>(in_dim: (usize, usize, usize), in_buf: &[u8]
       let x = u * sx as f32;
       let y = v * sy as f32;
       let x0 = (x - 0.5).floor().max(0.0) + 0.5;
-      let x1 = (x + 0.5).floor().max((in_w-1) as f32) + 0.5;
+      let x1 = (x + 0.5).floor().min((in_w-1) as f32) + 0.5;
       let y0 = (y - 0.5).floor().max(0.0) + 0.5;
       let y1 = (y + 0.5).floor().min((in_h-1) as f32) + 0.5;
       let kx0 = x0.floor() as usize;
