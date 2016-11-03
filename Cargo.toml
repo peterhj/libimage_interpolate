@@ -1,0 +1,11 @@
+[package]
+name = "image_interpolate"
+authors = ["Peter Jin <peterhaijin@gmail.com>"]
+version = "0.0.1"
+
+[lib]
+name = "image_interpolate"
+path = "src/lib.rs"
+
+[dependencies]
+rand = "*"
